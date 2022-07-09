@@ -16,7 +16,7 @@ source activate UNet2022
 pip install -e .
 ```
 # Data-Preparation
-UNet-2022 is a 2D based network, and all data should be expressed in 2D form with ```.nii.gz``` format. You can download the organized dataset from the [link](https://drive.google.com/drive/folders/1b4IVd9pOCFwpwoqfnVpsKZ6b3vfBNL6x?usp=sharing) or download the original data from the link below. If you need to convert other formats (such as ```.jpg```, ```.npy```) to the ```.nii.gz```, you can look up the file and modify the file based on your own datasets.
+UNet-2022 is a 2D based network, and all data should be expressed in 2D form with ```.nii.gz``` format. You can download the organized dataset from the [link](https://drive.google.com/drive/folders/1b4IVd9pOCFwpwoqfnVpsKZ6b3vfBNL6x?usp=sharing) or download the original data from the link below. If you need to convert other formats (such as ```.jpg```) to the ```.nii.gz```, you can look up the file and modify the [file](https://github.com/282857341/UNet-2022/blob/master/nnunet/dataset_conversion/Task120_ISIC.py) based on your own datasets.
 
 **Dataset I**
 [ACDC](https://www.creatis.insa-lyon.fr/Challenge/acdc/)
