@@ -72,17 +72,16 @@ Before this step, you should set the environment variables to ensure the framewo
 ```
 bash train_or_test.sh -c 0 -n unet2022_acdc -i 1 -s 0.5 -t true -p true 
 ```
-The above command will run the training command and testing command continuously.
-
-You can download the pre-trained weight based on ImageNet or our model weights from this [link](https://drive.google.com/drive/folders/1F9HnLCzWGqoC4BIQ-pDDlnWkmP9Y98Bj?usp=sharing). 
-
-You need to adjust the path after the ``` cd``` command in the ```train_or_test.sh``` by yourself.
 - ```-c 0``` refers to the index of your Cuda device.
 - ```-n unet2022_acdc```denotes the suffix of the trainer located at ```UNet-2022/nnunet/training/network_training/```. For example, nnUNetTrainerV2_unet2022_acdc refers to ```-n unet2022_acdc```.
 - ```-i 1``` means the index of the task. For example, Task001 refers to ```-i 1```.
 - ```-s 0.5``` means the inference step size, reducing the value tends to bring better performance but longer inference time.
 - ```-t true/false``` determines whether to run the training command.
 - ```-p true/false``` determines whether to run the testing command.
+
+The above command will run the training command and testing command continuously.
+
+You can download the pre-trained weight based on ImageNet or our model weights from this [link](https://drive.google.com/drive/folders/1F9HnLCzWGqoC4BIQ-pDDlnWkmP9Y98Bj?usp=sharing). 
 
 Before you start the training, please download the pre-trained weight and adjust the path of it in the trainer that located at ```nnunet/training/network_training```.
 
