@@ -54,14 +54,14 @@ The dataset should be finaly organized as follows:
   ├── nnUNet_trained_models/
   ├── nnUNet_preprocessed/
 ```
-One thing you should be careful of is that folder imagesTr contains both training set and validation set, and correspondingly, the value of 'numTraining' in dataset.json equals the case number in the imagesTr. The division of the training set and validation set will be done in the trainer located at the path ```nnunet/training/network_training```.
+One thing you should be careful of is that folder imagesTr contains both training set and validation set, and correspondingly, the value of ```numTraining``` in dataset.json equals the case number in the imagesTr. The division of the training set and validation set will be done in the network configuration located at ```nnunet/network_configuration/config.py```.
 
 The evaulate.py is used for calculating the evaulation metrics and can be found in the [link](https://drive.google.com/drive/folders/1b4IVd9pOCFwpwoqfnVpsKZ6b3vfBNL6x?usp=sharing) of the organized datasets or you can write it by yourself.
 # Data-Preprocessing
 ```
-nnUNet_convert_decathlon_task -i ./DATASET/nnUNet_raw/nnUNet_raw_data/Task01_ACDC
+nnUNet_convert_decathlon_task -i path/to/Task01_ACDC
 ```
-This step will convert the name of folder from Taskxx to Taskxxx, and make the name of each nifti files end with '_000x.nii.gz'.
+This step will convert the name of folder from Task01 to Task001, and make the name of each nifti files end with '_000x.nii.gz'.
 ```
 nnUNet_plan_and_preprocess -t 1
 ```
