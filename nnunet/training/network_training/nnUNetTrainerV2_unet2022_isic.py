@@ -12,6 +12,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+
 from collections import OrderedDict
 from typing import Tuple
 
@@ -36,15 +37,7 @@ from batchgenerators.utilities.file_and_folder_operations import *
 from torch.optim.lr_scheduler import ReduceLROnPlateau, StepLR, CosineAnnealingLR
 from tqdm import tqdm
 import yaml
-
-def loadData(data="config.yaml"):
-
-        with open(data, "r") as f:
-            content = f.read()
-        yamlData = yaml.load(content,Loader=yaml.FullLoader)
-        #print("yamlData_type: ", type(yamlData))
-        #print("Hyper_parameters: ", yamlData['Hyper_parameters'])
-        return yamlData
+from nnunet.network_configuration.config import CONFIGS
 
 class nnUNetTrainerV2_unet2022_isic(nnUNetTrainer):
     """
@@ -55,29 +48,43 @@ class nnUNetTrainerV2_unet2022_isic(nnUNetTrainer):
                  unpack_data=True, deterministic=True, fp16=False):
         super().__init__(plans_file, fold, output_folder, dataset_directory, batch_dice, stage, unpack_data,
                          deterministic, fp16)
-                         
-        yamlData = loadData(data="/home/xychen/jsguo/yaml/ISIC_512.yaml")
 
-        
-        self.max_num_epochs = yamlData['Hyper_parameters']['Epochs_num']
-        self.initial_lr = yamlData['Hyper_parameters']['Base_learning_rate']
-        self.batch_size = yamlData['Hyper_parameters']['Batch_size']
-        self.patch_size = yamlData['Hyper_parameters']['Crop_size']
-        self.Deep_supervision = yamlData['Hyper_parameters']['Deep_supervision']
-        #self.learning_rate_schedule = yamlData['Hyper_parameters']['Learning_rate_schedule']
-        self.model_size = yamlData['Hyper_parameters']['Model_size']
-        self.num_blocks = yamlData['Hyper_parameters']['Blocks_num']
-        self.val_eval_criterion_alpha = yamlData['Hyper_parameters']['Val_eval_criterion_alpha'] # used for validation. dice = alpha * old_dice + (1-alpha) * new_dice
-        self.convolution_stem_down = yamlData['Hyper_parameters']['Convolution_stem_down']
-        self.window_size = yamlData['Hyper_parameters']['Window_size']
-        
-        self.pretrain = yamlData['Pretrain']
-        self.train_list = yamlData['Train_list']
-        self.val_list = yamlData['Val_list']
-        self.print_to_log_file('Hyper_parameters:',yamlData['Hyper_parameters'],also_print_to_console=True)
+        config = CONFIGS['ISIC_512']
+        self.config = config
+        self.max_num_epochs = config.hyper_parameter.epochs_num
+        self.initial_lr = config.hyper_parameter.base_learning_rate
+        self.batch_size = config.hyper_parameter.batch_size #don't uncomment batch_size
+        self.patch_size = config.hyper_parameter.crop_size  #don't uncomment patch size
+        self.model_size = config.hyper_parameter.model_size
+        self.val_eval_criterion_alpha = config.hyper_parameter.val_eval_criterion_alpha # used for validation. dice = alpha * old_dice + (1-alpha) * new_dice
+
+        self.Deep_supervision = config.deep_supervision
+        self.pretrain = config.pretrain
+        self.train_list = config.train_list
+        self.val_list = config.val_list
+        self.print_to_log_file('Hyper_parameters:', config.hyper_parameter, also_print_to_console=True)
         self.deep_supervision_scales = None
         self.ds_loss_weights = None
         self.pin_memory = True
+        
+        assert self.model_size in ['Tiny','Base','Large'], "error key words, or you can dismiss it and set it by yourself"
+        if self.model_size == 'Tiny':
+            self.embedding_dim = 96
+            self.num_heads = [3,6,12,24]
+            if self.pretrain:
+                self.pre_trained_weight = torch.load("/home/xychen/jsguo/weight/convnext_t_3393.model",map_location='cpu')
+            
+        if self.model_size=='Base':
+            self.embedding_dim = 128
+            self.num_heads = [4,8,16,32]
+            if self.pretrain:
+                self.pre_trained_weight = torch.load("/home/xychen/jsguo/weight/convnext_base.model",map_location='cpu')
+
+        if self.model_size=='Large':
+            self.embedding_dim = 192
+            self.num_heads = [6,12,24,48]
+            if self.pretrain:
+                self.pre_trained_weight = torch.load("/home/xychen/jsguo/weight/convnext_large.model",map_location='cpu')
     def initialize(self, training=True, force_load_plans=False):
         """
         - replaced get_default_augmentation with get_moreDA_augmentation
@@ -147,32 +154,16 @@ class nnUNetTrainerV2_unet2022_isic(nnUNetTrainer):
             self.print_to_log_file('self.was_initialized is True, not running self.initialize again')
         self.was_initialized = True
 
-    def initialize_network(self):
-        assert self.model_size in ['Tiny','Base','Large'], "error key words, or you can dismiss it and set it by yourself"
-        
-        if self.model_size == 'Tiny':
-            self.embedding_dim = 96
-            self.num_heads = [3,6,12,24]
-            self.pre_trained_weight = torch.load("/home/xychen/jsguo/weight/convnext_t_3393.model",map_location='cpu')
-            
-        if self.model_size=='Base':
-            self.embedding_dim = 128
-            self.num_heads = [4,8,16,32]
-            self.pre_trained_weight = torch.load("/home/xychen/jsguo/weight/convnext_base.model",map_location='cpu')
-
-        if self.model_size=='Large':
-            self.embedding_dim = 192
-            self.num_heads = [6,12,24,48]
-            self.pre_trained_weight = torch.load("/home/xychen/jsguo/weight/convnext_large.model",map_location='cpu')
-       
+    def initialize_network(self):  
         # Don't touch conv_op
-        self.network = unet2022(self.patch_size, self.num_input_channels, self.embedding_dim, self.window_size, self.num_heads,
-                                        self.convolution_stem_down, self.num_classes, self.num_blocks, self.Deep_supervision, 
-                                        conv_op=nn.Conv2d)
-        #from ptflops import get_model_complexity_info
-
-        #flops, params = get_model_complexity_info(self.network, (self.num_input_channels,self.patch_size[0],self.patch_size[1]),as_strings=True,print_per_layer_stat=False)
-        #self.print_to_log_file("|flops: %s |params: %s" % (flops,params))
+        self.network = unet2022(self.config, 
+                                self.num_input_channels, 
+                                self.embedding_dim, 
+                                self.num_heads, 
+                                self.num_classes, 
+                                self.Deep_supervision, 
+                                conv_op=nn.Conv2d)   
+       
         if self.pretrain:
             checkpoint=self.pre_trained_weight
             ck={}
@@ -180,9 +171,11 @@ class nnUNetTrainerV2_unet2022_isic(nnUNetTrainer):
                 if i in checkpoint:
                     # if the key in the pre-trained model is the same with ours model, we load it. If not, we initialize it randomly.
                     # so it's necessary to check the key of the pre-trained model and ours
+                    print(i)
                     ck.update({i:checkpoint[i]})
                 else:
                     ck.update({i:self.network.state_dict()[i]})
+            print('Successfully load the weight above!')
             self.network.load_state_dict(ck)
             print('I am using the pre_trained weight!!') 
         
@@ -261,7 +254,6 @@ class nnUNetTrainerV2_unet2022_isic(nnUNetTrainer):
         :param run_online_evaluation:
         :return:
         """
-
         data_dict=data_generator
         data = data_dict['data']
         target = data_dict['target']

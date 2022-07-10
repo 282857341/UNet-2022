@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts 'c:n:i:s:t:p' OPT; do
+while getopts 'c:n:i:s:t:p:' OPT; do
     case $OPT in
         c) cuda=$OPTARG;;
         n) name=$OPTARG;;
@@ -11,7 +11,24 @@ while getopts 'c:n:i:s:t:p' OPT; do
 		
     esac
 done
-echo $name	
+
+echo $name
+	
+if [[ ${task} -lt 10 ]]; then 
+	task=00${task}
+elif [[ ${task} -lt 100 ]]; then
+	task=0${task}
+fi
+
+
+for file_a in $nnUNet_raw_data_base/nnUNet_raw_data/*; do
+    temp_folder=`basename $file_a`
+	
+	if [ ${temp_folder:4:3} = $task ] ; then
+	
+		target_folder=$temp_folder
+	fi
+done 
 
 if ${train}
 then
@@ -22,9 +39,9 @@ fi
 
 if ${predict}
 then
-	cd /home/xychen/new_transformer/nnUNetFrame/DATASET/nnUNet_raw/nnUNet_raw_data/Task029_acdc_slice/
+	cd $nnUNet_raw_data_base/nnUNet_raw_data/$target_folder/
 	CUDA_VISIBLE_DEVICES=${cuda} nnUNet_predict -i imagesTs -o inferTs/${name}_${step}step -m 2d -t ${task} -chk model_best -tr nnUNetTrainerV2_${name} --num_threads_preprocessing 16 --num_threads_nifti_save 16 --step_size ${step}
-	#You can find evaulate.py in the organized dataset downloaded from the google drive or you can write it by yourself.
+	#The evaulate.py is used for calcalating the dice. You can find evaulate.py in the organized dataset downloaded from the google drive or you can write it by yourself. 
 	python evaulate.py ${name}_${step}step
 fi
 

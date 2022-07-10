@@ -475,7 +475,7 @@ class PatchEmbed(nn.Module):
 
 
 
-class SwinTransformer(nn.Module):
+class encoder(nn.Module):
     def __init__(self,
                  pretrain_img_size=[224,224],
                  patch_size=[4,4],
@@ -711,24 +711,50 @@ class Block(nn.Module):
 
                                          
 class unet2022(SegmentationNetwork):
-    def __init__(self, crop_size, input_channels, embedding_dim, window_size, num_heads, convolution_stem_down, num_classes, num_blocks, deep_supervision=True, conv_op=nn.Conv2d):
+    def __init__(self, 
+                 config, 
+                 num_input_channels, 
+                 embedding_dim, 
+                 num_heads, 
+                 num_classes, 
+                 deep_supervision, 
+                 conv_op=nn.Conv2d):
         super(unet2022, self).__init__()
-        # Don't uncomment conv_op
-        self.num_classes=num_classes
-        self.conv_op=conv_op
         
+        # Don't uncomment conv_op
+        self.num_input_channels = num_input_channels
+        self.num_classes = num_classes
+        self.conv_op = conv_op
         self.do_ds = deep_supervision          
-        embed_dim=embedding_dim
-        depths=num_blocks
-        num_heads=num_heads
-        patch_size=[convolution_stem_down,convolution_stem_down]
+        self.embed_dim = embedding_dim
+        self.depths=config.hyper_parameter.blocks_num
+        self.num_heads=num_heads
+        self.crop_size = config.hyper_parameter.crop_size
+        self.patch_size=[config.hyper_parameter.convolution_stem_down,config.hyper_parameter.convolution_stem_down]
+        self.window_size = config.hyper_parameter.window_size
         # if window size of the encoder is [7,7,14,7], then decoder's is [14,7,7]. In short, reverse the list and start from the index of 1 
-        self.model_down=SwinTransformer(pretrain_img_size=crop_size,window_size = window_size, embed_dim=embed_dim,patch_size=patch_size,depths=depths,num_heads=num_heads,in_chans=input_channels)
-        self.decoder=decoder(pretrain_img_size=crop_size, window_size = window_size[::-1][1:],embed_dim=embed_dim,patch_size=patch_size,depths=depths[::-1][1:],num_heads=num_heads[::-1][1:])
+        self.model_down = encoder(
+                                  pretrain_img_size=self.crop_size,
+                                  window_size = self.window_size, 
+                                  embed_dim=self.embed_dim,
+                                  patch_size=self.patch_size,
+                                  depths=self.depths,
+                                  num_heads=self.num_heads,
+                                  in_chans=self.num_input_channels
+                                 )
+                                        
+        self.decoder = decoder(
+                               pretrain_img_size=self.crop_size, 
+                               window_size = self.window_size[::-1][1:],
+                               embed_dim=self.embed_dim,
+                               patch_size=self.patch_size,
+                               depths=self.depths[::-1][1:],
+                               num_heads=self.num_heads[::-1][1:]
+                              )
    
         self.final=[]
-        for i in range(len(depths)-1):
-            self.final.append(final_patch_expanding(embed_dim*2**i,num_classes,patch_size=patch_size))
+        for i in range(len(self.depths)-1):
+            self.final.append(final_patch_expanding(self.embed_dim*2**i,self.num_classes,patch_size=self.patch_size))
         self.final=nn.ModuleList(self.final)
         
     def forward(self, x):
@@ -736,6 +762,7 @@ class unet2022(SegmentationNetwork):
         skips = self.model_down(x)
         neck=skips[-1]
         out=self.decoder(neck,skips)
+        
         for i in range(len(out)):  
             seg_outputs.append(self.final[-(i+1)](out[i]))
         

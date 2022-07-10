@@ -1,19 +1,4 @@
-import yaml
-
-
-def write2Yaml(data, save_path="test.yaml"):
-
-    with open(save_path, "w") as f:
-        yaml.dump(data, f)
-
-def loadData(data="config.yaml"):
-
-    with open(data, "r") as f:
-        content = f.read()
-    yamlData = yaml.load(content)
-    print("yamlData_type: ", type(yamlData))
-    print("yamlData: ", yamlData)
-    return yamlData
+import ml_collections
 
 Synapse_train_list=['label0006','label0007' ,'label0009', 'label0010', 'label0021' ,'label0023' ,'label0024','label0026' ,'label0027' ,'label0031', 'label0033' ,'label0034','label0039', 'label0040','label0005', 'label0028', 'label0030', 'label0037']
 Synapse_val_list  =['label0001', 'label0002', 'label0003', 'label0004', 'label0008', 'label0022','label0025', 'label0029', 'label0032', 'label0035', 'label0036', 'label0038']
@@ -28,121 +13,119 @@ ISIC_train_list=['0000001', '0000002', '0000007', '0000008', '0000009', '0000010
 ISIC_train_list2  =['0000000', '0000004', '0000006', '0000016', '0000045', '0000048', '0000060', '0000079', '0000080', '0000081', '0000082', '0000089', '0000100', '0000102', '0000109', '0000122', '0000130', '0000147', '0000153', '0000155', '0000159', '0000163', '0000175', '0000179', '0000184', '0000189', '0000192', '0000203', '0000205', '0000206', '0000216', '0000221', '0000223', '0000229', '0000247', '0000252', '0000261', '0000275', '0000281', '0000282', '0000283', '0000292', '0000295', '0000297', '0000300', '0000301', '0000303', '0000315', '0000316', '0000322', '0000336', '0000342', '0000344', '0000364', '0000367', '0000372', '0000387', '0000396', '0000415', '0000423', '0000444', '0000452', '0000473', '0000475', '0000481', '0000488', '0000511', '0000517', '0000519', '0000520', '0000524', '0000548', '0000554', '0001106', '0001254', '0001262', '0001286', '0001292', '0001367', '0001372', '0001423', '0001449', '0001742', '0002439', '0002488', '0002948', '0003005', '0004168', '0004985', '0005555', '0005666', '0005787', '0006612', '0006795', '0007087', '0007557', '0008029', '0008236', '0008528', '0008785', '0009599', '0009860', '0009905', '0009909', '0009915', '0009917', '0009925', '0009932', '0009934', '0009935', '0009941', '0009942', '0009960', '0009971', '0009975', '0009978', '0009981', '0010006', '0010029', '0010044', '0010064', '0010066', '0010068', '0010074', '0010087', '0010091', '0010101', '0010105', '0010170', '0010184', '0010186', '0010203', '0010204', '0010205', '0010228', '0010242', '0010251', '0010262', '0010266', '0010317', '0010318', '0010319', '0010330', '0010337', '0010341', '0010342', '0010364', '0010372', '0010439', '0010447', '0010464', '0010467', '0010495', '0010558', '0010572', '0010581', '0010590', '0010864', '0011082', '0011102', '0011105', '0011119', '0011125', '0011136', '0011144', '0011156', '0011157', '0011158', '0011173', '0011199', '0011220', '0011229', '0011304', '0011322', '0011339', '0011350', '0011366', '0011373', '0011393', '0011398']
 ISIC_train_list.extend(ISIC_train_list2)
 ISIC_val_list = []
-Synapse_320={
-            'Task_name':'Synapse',
-            'Pretrain':True,
-            'Train_list':Synapse_train_list,
-            'Val_list':Synapse_val_list,
-            'Hyper_parameters':
-            {
-                'Crop_size':[320,320],
-                'Batch_size': 8,
-                'Base_learning_rate':1e-4,
-                'Model_size':'Base',
-                'Blocks_num':[3,3,3,3],
-                'Window_size':[10,10,20,10],
-                'Val_eval_criterion_alpha':0,
-                'Epochs_num':1300,
-                'Convolution_stem_down':4,
-                'Deep_supervision':True
-                }
-            }
-
-Synapse_224 = {
-            'Task_name': 'Synapse',
-            'Pretrain':True,
-            'Train_list':Synapse_train_list,
-            'Val_list':Synapse_val_list ,
-            'Hyper_parameters':
-            {
-                'Crop_size':[224,224],
-                'Batch_size': 16,
-                'Base_learning_rate':1e-4,
-                'Model_size':'Tiny',
-                'Blocks_num':[3,3,3,3],
-                'Window_size':[7,7,14,7],
-                'Val_eval_criterion_alpha':0,
-                'Epochs_num':2700,
-                'Convolution_stem_down':4,
-                'Deep_supervision':True
-                }      
-            }
-
-ACDC_224 = {
-            'Task_name': 'ACDC',
-            'Pretrain':True,
-            'Train_list':ACDC_train_list,
-            'Val_list':ACDC_val_list,
-            'Hyper_parameters':
-            {
-                'Crop_size':[224,224],
-                'Batch_size': 8,
-                'Base_learning_rate':1e-4,
-                'Model_size':'Large',
-                'Blocks_num':[3,3,3,3],
-                'Window_size':[7,7,14,7],
-                'Val_eval_criterion_alpha':0.9,
-                'Epochs_num':500,
-                'Convolution_stem_down':4,
-                'Deep_supervision':False
-                }
-            }
 
 
-ISIC_512 = {
-                    'Task_name': 'ISIC',
-                    'Pretrain':True,
-                    'Train_list':ISIC_train_list,
-                    'Val_list':ISIC_val_list,
-                    'Hyper_parameters':
-                    {
-                        'Crop_size':[512,512],
-                        'Batch_size': 16,
-                        'Base_learning_rate':1.3e-4,
-                        'Model_size':'Tiny',
-                        'Blocks_num':[3,3,3,3],
-                        'Window_size':[8,8,16,8],
-                        'Val_eval_criterion_alpha':0.0,
-                        'Epochs_num':75,
-                        'Convolution_stem_down':8,
-                        'Deep_supervision':True
-                        }
-                    }
+def EM_512():
+    config = ml_collections.ConfigDict()
+    
+    config.pretrain = True
+    config.deep_supervision = True
+    config.train_list = EM_train_list
+    config.val_list = EM_val_list
+    
+    config.hyper_parameter = ml_collections.ConfigDict()
+    config.hyper_parameter.crop_size = [512,512]
+    config.hyper_parameter.batch_size = 8
+    config.hyper_parameter.base_learning_rate = 7e-4
+    config.hyper_parameter.model_size = 'Tiny'
+    config.hyper_parameter.blocks_num = [3,3,3,3]
+    config.hyper_parameter.window_size = [16,16,16,8]
+    config.hyper_parameter.val_eval_criterion_alpha = 0.9
+    config.hyper_parameter.epochs_num = 2000
+    config.hyper_parameter.convolution_stem_down = 8
+   
+    return config
 
-EM_512 = {
-            'Task_name': 'EM',
-            'Pretrain':True,
-            'Train_list':EM_train_list,
-            'Val_list':EM_val_list,
-            'Hyper_parameters':
-                {
-                    'Crop_size':[512,512],
-                    'Batch_size': 8,
-                    'Base_learning_rate':7e-4,
-                    'Learning_rate_schedule':'Fixed',
-                    'Model_size':'Tiny',
-                    'Blocks_num':[3,3,3,3],
-                    'Window_size':[16,16,16,8],
-                    'Val_eval_criterion_alpha':0.9,
-                    'Epochs_num':2000,
-                    'Convolution_stem_down':8,
-                    'Deep_supervision':True
-                    }
-            }
-            
-#num heads and embedding dim will be automatically generated according to Model size
+def ISIC_512():
+    config = ml_collections.ConfigDict()
+    
+    config.pretrain = True
+    config.deep_supervision = True
+    config.train_list = ISIC_train_list
+    config.val_list = ISIC_val_list
+    
+    config.hyper_parameter = ml_collections.ConfigDict()
+    config.hyper_parameter.crop_size = [512,512]
+    config.hyper_parameter.batch_size = 16
+    config.hyper_parameter.base_learning_rate = 1.3e-4
+    config.hyper_parameter.blocks_num = [3,3,3,3]
+    config.hyper_parameter.window_size = [8,8,16,8]
+    config.hyper_parameter.val_eval_criterion_alpha = 0
+    config.hyper_parameter.epochs_num = 75
+    config.hyper_parameter.convolution_stem_down = 8
+   
+    return config
 
-write2Yaml(Synapse_320, save_path="Synapse_320.yaml")
-yamlData = loadData(data="Synapse_320.yaml")
+def ACDC_224():
+    config = ml_collections.ConfigDict()
+    
+    config.pretrain = True
+    config.deep_supervision = False
+    config.train_list = ACDC_train_list
+    config.val_list = ACDC_val_list
+    
+    config.hyper_parameter = ml_collections.ConfigDict()
+    config.hyper_parameter.crop_size = [224,224]
+    config.hyper_parameter.batch_size = 8
+    config.hyper_parameter.base_learning_rate = 1e-4
+    config.hyper_parameter.model_size = 'Large'
+    config.hyper_parameter.blocks_num = [3,3,3,3]
+    config.hyper_parameter.window_size = [7,7,14,7]
+    config.hyper_parameter.val_eval_criterion_alpha = 0.9
+    config.hyper_parameter.epochs_num = 500
+    config.hyper_parameter.convolution_stem_down = 4
+   
+    return config
 
-write2Yaml(Synapse_224, save_path="Synapse_224.yaml")
-yamlData = loadData(data="Synapse_224.yaml")
+def Synapse_224():
+    config = ml_collections.ConfigDict()
+    
+    config.pretrain = True
+    config.deep_supervision = True
+    config.train_list = Synapse_train_list
+    config.val_list = Synapse_val_list
+    
+    config.hyper_parameter = ml_collections.ConfigDict()
+    config.hyper_parameter.crop_size = [224,224]
+    config.hyper_parameter.batch_size = 16
+    config.hyper_parameter.base_learning_rate = 1e-4
+    config.hyper_parameter.model_size = 'Base'
+    config.hyper_parameter.blocks_num = [3,3,3,3]
+    config.hyper_parameter.window_size = [7,7,14,7]
+    config.hyper_parameter.val_eval_criterion_alpha = 0.
+    config.hyper_parameter.epochs_num = 2700
+    config.hyper_parameter.convolution_stem_down = 4
+   
+    return config
+    
+def Synapse_320():
+    config = ml_collections.ConfigDict()
+    
+    config.pretrain = True
+    config.deep_supervision = True
+    config.train_list = Synapse_train_list
+    config.val_list = Synapse_val_list
+    
+    config.hyper_parameter = ml_collections.ConfigDict()
+    config.hyper_parameter.crop_size = [320,320]
+    config.hyper_parameter.batch_size = 8
+    config.hyper_parameter.base_learning_rate = 1e-4
+    config.hyper_parameter.model_size = 'Tiny'
+    config.hyper_parameter.blocks_num = [3,3,3,3]
+    config.hyper_parameter.window_size = [10,10,20,10]
+    config.hyper_parameter.val_eval_criterion_alpha = 0.
+    config.hyper_parameter.epochs_num = 1300
+    config.hyper_parameter.convolution_stem_down = 4
+   
+    return config
+    
+CONFIGS = {
+    'EM_512':EM_512(),
+    'ISIC_512':ISIC_512(),
+    'ACDC_224':ACDC_224(),
+    'Synapse_224':Synapse_224(),
+    'Synapse_320':Synapse_320(),
+}
 
-write2Yaml(ACDC_224, save_path="ACDC_224.yaml")
-yamlData = loadData(data="ACDC_224.yaml")
 
-write2Yaml(ISIC_512, save_path="ISIC_512.yaml")
-yamlData = loadData(data="ISIC_512.yaml")
 
-write2Yaml(EM_512, save_path="EM_512.yaml")
-yamlData = loadData(data="EM_512.yaml")

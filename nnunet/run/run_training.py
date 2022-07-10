@@ -29,9 +29,7 @@ from nnunet.training.network_training.nnUNetTrainerV2_CascadeFullRes import nnUN
 from nnunet.utilities.task_name_id_conversion import convert_id_to_task_name
 
 import random
-#seed=random.randint(0,100)
 seed=42
-#seed = int(seed)
 random.seed(seed)
 np.random.seed(seed)
 os.environ['PYTHONHASHSEED'] = str(seed)
@@ -39,27 +37,11 @@ np.random.seed(seed)
 torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
 torch.cuda.manual_seed_all(seed)
-#torch.backends.cudnn.deterministic = False
-#torch.backends.cudnn.benchmark = True
-#torch.backends.cudnn.enabled = False
 
-'''
-for isic
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
-torch.backends.cudnn.enabled = False
-'''
-
-'''4.25
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = True
-torch.backends.cudnn.enabled = False
-'''
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 torch.backends.cudnn.enabled = False
 
-#to improve the efficiency set the last two true
 def main():
     
     parser = argparse.ArgumentParser()

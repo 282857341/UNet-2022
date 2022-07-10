@@ -129,7 +129,6 @@ def main():
     num_threads_nifti_save = args.num_threads_nifti_save
     disable_tta = args.disable_tta
     step_size = args.step_size
-    print(step_size)
     overwrite_existing = args.overwrite_existing
     mode = args.mode
     all_in_gpu = args.all_in_gpu

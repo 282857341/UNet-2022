@@ -94,31 +94,18 @@ class NetworkTrainer(object):
         # too high the training will take forever
         self.train_loss_MA_alpha = 0.93  # alpha * old + (1-alpha) * new
         self.train_loss_MA_eps = 5e-4  # new MA must be at least this much better (smaller)
-        self.max_num_epochs = 160
-        #self.num_batches_per_epoch = 65
-        #self.num_val_batches_per_epoch = 12
-        #self.num_batches_per_epoch = 97
-        #self.num_val_batches_per_epoch = 18
-        #self.num_batches_per_epoch = 194
-        #self.num_val_batches_per_epoch = 37
-        #self.num_batches_per_epoch = 80
-        #self.num_val_batches_per_epoch = 16
-        #self.num_batches_per_epoch = 1038
-        self.num_batches_per_epoch = 185
-        self.num_val_batches_per_epoch = 32
-        #self.num_batches_per_epoch = 45
-        #self.num_val_batches_per_epoch = 50
-        #self.num_batches_per_epoch = 23
-        #self.num_val_batches_per_epoch = 6
-        #self.num_batches_per_epoch = 16
-        #self.num_val_batches_per_epoch = 4
+        self.max_num_epochs = 1000
+      
+        self.num_batches_per_epoch = 250
+        self.num_val_batches_per_epoch = 50
+      
         self.also_val_in_tr_mode = False
         self.lr_threshold = 1e-6  # the network will not terminate training if the lr is still above this threshold
-        self.num_steps=self.max_num_epochs * self.num_batches_per_epoch
-        self.warmup_epoch=0 
-        self.min_lr = 1e-6
-        self.warmup_lr= 0
-        self.warmup_steps = self.warmup_epoch*self.num_batches_per_epoch
+        #self.num_steps=self.max_num_epochs * self.num_batches_per_epoch
+        #self.warmup_epoch=0 
+        #self.min_lr = 1e-6
+        #self.warmup_lr= 0
+        #self.warmup_steps = self.warmup_epoch*self.num_batches_per_epoch
         ################# LEAVE THESE ALONE ################################################
         self.val_eval_criterion_MA = None
         self.train_loss_MA = None
@@ -598,8 +585,6 @@ class NetworkTrainer(object):
                 #self.print_to_log_file("saving best epoch checkpoint...")
             #if self.all_val_losses[-1]<self.best_val_loss:
             #    self.best_val_loss=self.all_val_losses[-1]
-                if self.save_best_checkpoint and self.best_val_eval_criterion_MA>0.0: self.save_checkpoint(join(self.output_folder, "model_best_%d.model" %self.epoch))
-                #if self.save_best_checkpoint and self.epoch>600: self.save_checkpoint(join(self.output_folder, "model_best_%d.model" %self.epoch))
                 if self.save_best_checkpoint : self.save_checkpoint(join(self.output_folder, "model_best.model"))
 
             # Now see if the moving average of the train loss has improved. If yes then reset patience, else

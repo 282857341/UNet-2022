@@ -1,0 +1,2 @@
+# Note
+The file is used for creating the network configuration. You don't need to care for the class_nums and input_channel_nums, because the framework will generate them automatically according to the dataset.
