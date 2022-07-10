@@ -29,7 +29,7 @@ UNet-2022 is a 2D based network, and all data should be expressed in 2D form wit
 **Dataset IV**
 [EM](https://imagej.net/events/isbi-2012-segmentation-challenge#training-data)
 
-The dataset should be finaly organized as follows:
+The dataset should be finally organized as follows:
 ```
 ./DATASET/
   ├── nnUNet_raw/
@@ -56,7 +56,7 @@ The dataset should be finaly organized as follows:
 ```
 One thing you should be careful of is that folder imagesTr contains both training set and validation set, and correspondingly, the value of ```numTraining``` in dataset.json equals the case number in the imagesTr. The division of the training set and validation set will be done in the network configuration located at ```nnunet/network_configuration/config.py```.
 
-The evaulate.py is used for calculating the evaulation metrics and can be found in the [link](https://drive.google.com/drive/folders/1b4IVd9pOCFwpwoqfnVpsKZ6b3vfBNL6x?usp=sharing) of the organized datasets or you can write it by yourself.
+The evaulate.py is used for calculating the evaulation metrics and can be found in the [link](https://drive.google.com/drive/folders/1b4IVd9pOCFwpwoqfnVpsKZ6b3vfBNL6x?usp=sharing) of the organized datasets or you can write it by yourself. The existing of evaulate.py will not affect the data preprocessing, training and testing.
 # Data-Preprocessing
 ```
 nnUNet_convert_decathlon_task -i path/to/Task01_ACDC
@@ -83,7 +83,7 @@ The above command will run the training command and testing command continuously
 
 You can download the pre-trained weight based on ImageNet or our model weights from this [link](https://drive.google.com/drive/folders/1F9HnLCzWGqoC4BIQ-pDDlnWkmP9Y98Bj?usp=sharing). 
 
-Before you start the training, please download the pre-trained weight and adjust the path of it in the trainer that located at ```nnunet/training/network_training```.
+Before you start the training, please download the pre-trained weight and adjust the path to it in the trainer that located at ```nnunet/training/network_training```.
 
 Before you start the testing, please make sure the model_best.model and model_best.model.pkl exists in the specified path, like this:
 ```
