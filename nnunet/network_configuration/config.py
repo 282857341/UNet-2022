@@ -48,6 +48,7 @@ def ISIC_512():
     config.hyper_parameter.crop_size = [512,512]
     config.hyper_parameter.batch_size = 16
     config.hyper_parameter.base_learning_rate = 1.3e-4
+    config.hyper_parameter.model_size = 'Tiny'
     config.hyper_parameter.blocks_num = [3,3,3,3]
     config.hyper_parameter.window_size = [8,8,16,8]
     config.hyper_parameter.val_eval_criterion_alpha = 0
