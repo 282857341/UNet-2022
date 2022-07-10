@@ -56,7 +56,7 @@ The dataset should be finaly organized as follows:
 ```
 One thing you should be careful of is that folder imagesTr contains both training set and validation set, and correspondingly, the value of 'numTraining' in dataset.json equals the case number in the imagesTr. The division of the training set and validation set will be done in the trainer located at the path ```nnunet/training/network_training```.
 
-The evaulate.py can be found in the [link](https://drive.google.com/drive/folders/1b4IVd9pOCFwpwoqfnVpsKZ6b3vfBNL6x?usp=sharing) of the organized datasets or you can write it by yourself.
+The evaulate.py is used for calculating the evaulation metrics and can be found in the [link](https://drive.google.com/drive/folders/1b4IVd9pOCFwpwoqfnVpsKZ6b3vfBNL6x?usp=sharing) of the organized datasets or you can write it by yourself.
 # Data-Preprocessing
 ```
 nnUNet_convert_decathlon_task -i ./DATASET/nnUNet_raw/nnUNet_raw_data/Task01_ACDC
@@ -81,8 +81,9 @@ You need to adjust the path after the ``` cd``` command in the ```train_or_test.
 - ```-n unet2022_acdc```denotes the suffix of the trainer located at ```UNet-2022/nnunet/training/network_training/```. For example, nnUNetTrainerV2_unet2022_acdc refers to ```-n unet2022_acdc```.
 - ```-i 1``` means the index of the task. For example, Task001 refers to ```-i 1```.
 - ```-s 0.5``` means the inference step size, reducing the value tends to bring better performance but longer inference time.
-- ```-t true/false`` determines whether to run the training command.
+- ```-t true/false``` determines whether to run the training command.
 - ```-p true/false``` determines whether to run the testing command.
+
 Before you start the training, please download the pre-trained weight and adjust the path of it in the trainer that located at ```nnunet/training/network_training```.
 
 Before you start the testing, please make sure the model_best.model and model_best.model.pkl exists in the specified path, like this:
