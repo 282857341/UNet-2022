@@ -72,8 +72,8 @@ Before this step, you should set the environment variables to ensure the framewo
 ```
 bash train_or_test.sh -c 0 -n unet2022_acdc -i 1 -s 0.5 -t true -p true 
 ```
-- ```-c 0``` refers to the index of your Cuda device.
-- ```-n unet2022_acdc```denotes the suffix of the trainer located at ```UNet-2022/nnunet/training/network_training/```. For example, nnUNetTrainerV2_unet2022_acdc refers to ```-n unet2022_acdc```.
+- ```-c 0``` refers to the index of your Cuda device and this command only support the single-GPU training.
+- ```-n unet2022_acdc``` denotes the suffix of the trainer located at ```UNet-2022/nnunet/training/network_training/```. For example, nnUNetTrainerV2_unet2022_acdc refers to ```-n unet2022_acdc```.
 - ```-i 1``` means the index of the task. For example, Task001 refers to ```-i 1```.
 - ```-s 0.5``` means the inference step size, reducing the value tends to bring better performance but longer inference time.
 - ```-t true/false``` determines whether to run the training command.
