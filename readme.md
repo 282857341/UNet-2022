@@ -59,7 +59,7 @@ One thing you should be careful of is that folder imagesTr contains both trainin
 The evaulate.py is used for calculating the evaulation metrics and can be found in the [link](https://drive.google.com/drive/folders/1b4IVd9pOCFwpwoqfnVpsKZ6b3vfBNL6x?usp=sharing) of the organized datasets or you can write it by yourself. The existing of evaulate.py will not affect the data preprocessing, training and testing.
 # Data-Preprocessing
 ```
-nnUNet_convert_decathlon_task -i path/to/Task01_ACDC
+nnUNet_convert_decathlon_task -i path/to/nnUNet_raw_data/Task01_ACDC
 ```
 This step will convert the name of folder from Task01 to Task001, and make the name of each nifti files end with '_000x.nii.gz'.
 ```
@@ -91,5 +91,5 @@ nnUNet_trained_models/nnUNet/2d/Task001_ACDC/nnUNetTrainerV2_unet2022_acdc/fold_
 nnUNet_trained_models/nnUNet/2d/Task001_ACDC/nnUNetTrainerV2_unet2022_acdc/fold_0/model_best.model.pkl
 ```
 # How_to_start_your_custom_training
-Every time you start a new training, you should create a new trainer that is located at ```nnunet/training/network_training``` to differentiate it from other trainers and make it inherited from the ```nnUNetTrainer```. After that, you can import your custom network or modify the experimental settings.
+Every time you start a new training, we recommend that you create a new trainer that is located at ```nnunet/training/network_training``` to differentiate it from other trainers and make it inherited from the ```nnUNetTrainer```. After that, you can start training or testing using the above command.
 
