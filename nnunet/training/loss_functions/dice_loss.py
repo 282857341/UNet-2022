@@ -129,7 +129,6 @@ def get_tp_fp_fn_tn(net_output, gt, axes=None, mask=None, square=False):
                 y_onehot = y_onehot.cuda(net_output.device.index)
             
             y_onehot.scatter_(1, gt, 1)
-
     tp = net_output * y_onehot
     fp = net_output * (1 - y_onehot)
     fn = (1 - net_output) * y_onehot
