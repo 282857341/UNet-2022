@@ -127,7 +127,6 @@ class MSABlock(nn.Module):
         self.num_heads = num_heads
         self.window_size = window_size
         self.shift_size = shift_size
-        self.mlp_ratio = mlp_ratio
         if min(self.input_resolution) <= self.window_size:
             # if window size is larger than input resolution, we don't partition windows
             self.shift_size = 0
@@ -765,13 +764,16 @@ class unet2022(SegmentationNetwork):
         
         for i in range(len(out)):  
             seg_outputs.append(self.final[-(i+1)](out[i]))
-        
         if self.do_ds:
             # for training
             return seg_outputs[::-1]
+            #size [[224,224],[112,112],[56,56]]
+
         else:
             #for validation and testing
             return seg_outputs[-1]
+            #size [[224,224]]
+
 
 
         

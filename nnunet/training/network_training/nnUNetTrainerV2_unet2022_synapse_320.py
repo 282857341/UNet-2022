@@ -168,11 +168,11 @@ class nnUNetTrainerV2_unet2022_synapse_320(nnUNetTrainer):
             checkpoint=self.pre_trained_weight
             ck={}
             for i in self.network.state_dict():
-                if i in checkpoint:
+                if i.replace('decoder','encoder') in checkpoint: #there is a mistake in the name of the key of the pretrained model
                     # if the key in the pre-trained model is the same with ours model, we load it. If not, we initialize it randomly.
                     # so it's necessary to check the key of the pre-trained model and ours
                     print(i)
-                    ck.update({i:checkpoint[i]})
+                    ck.update({i:checkpoint[i.replace('decoder','encoder')]})
                 else:
                     ck.update({i:self.network.state_dict()[i]})
             print('Successfully load the weight above!')

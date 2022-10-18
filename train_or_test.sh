@@ -42,7 +42,7 @@ then
 	cd $nnUNet_raw_data_base/nnUNet_raw_data/$target_folder/
 	CUDA_VISIBLE_DEVICES=${cuda} nnUNet_predict -i imagesTs -o inferTs/${name}_${step}step -m 2d -t ${task} -chk model_best -tr nnUNetTrainerV2_${name} --num_threads_preprocessing 16 --num_threads_nifti_save 16 --step_size ${step}
 	#The evaulate.py is used for calcalating the dice. You can find evaulate.py in the organized dataset downloaded from the google drive or you can write it by yourself. 
-	python evaulate.py ${name}_${step}step
+	#python evaulate.py ${name}_${step}step
 fi
 
 

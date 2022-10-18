@@ -78,7 +78,7 @@ class nnUNetTrainerV2_unet2022_synapse_224(nnUNetTrainer):
             self.embedding_dim = 128
             self.num_heads = [4,8,16,32]
             if self.pretrain:
-                self.pre_trained_weight = torch.load("/home/xychen/jsguo/weight/convnext_base.model",map_location='cpu')
+                self.pre_trained_weight = torch.load("/home/jsg/jsguo/weight/convnext_base.model",map_location='cpu')
 
         if self.model_size=='Large':
             self.embedding_dim = 192
@@ -168,17 +168,19 @@ class nnUNetTrainerV2_unet2022_synapse_224(nnUNetTrainer):
             checkpoint=self.pre_trained_weight
             ck={}
             for i in self.network.state_dict():
-                if i in checkpoint:
+                if i.replace('decoder','encoder') in checkpoint: #there is a mistake in the name of the key of the pretrained model
                     # if the key in the pre-trained model is the same with ours model, we load it. If not, we initialize it randomly.
                     # so it's necessary to check the key of the pre-trained model and ours
+                    ck.update({i:checkpoint[i.replace('decoder','encoder')]})
                     print(i)
-                    ck.update({i:checkpoint[i]})
                 else:
                     ck.update({i:self.network.state_dict()[i]})
             print('Successfully load the weight above!')
             self.network.load_state_dict(ck)
             print('I am using the pre_trained weight!!') 
         
+        total = sum(p.numel() for p in self.network.parameters() if p.requires_grad)
+        print("Total params: %.2fM" % (total/1e6))
         if torch.cuda.is_available():
             self.network.cuda()
         self.network.inference_apply_nonlin = softmax_helper
