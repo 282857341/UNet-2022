@@ -4,7 +4,7 @@ This repository is the official implementation of [UNet-2022: Exploring Dynamics
 - [Installation](#Installation) 
 - [Data-Preparation](#Data-Preparation)
 - [Data-Preprocessing](#Data-Preprocessing)
-- [Training_or_Testing_Command](#Training_or_Testing_Command) 
+- [Training_or_Testing_Command(includeing Pretrained_model_link)](#Training_or_Testing_Command) 
 - [How_to_start_your_custom_training](#How_to_start_your_custom_training) 
 # Installation
 ```
